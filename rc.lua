@@ -439,6 +439,10 @@ globalkeys = gears.table.join(
     awful.key({}, "XF86AudioRaiseVolume", function() volumecfg:up() end),
     awful.key({}, "XF86AudioLowerVolume", function() volumecfg:down() end),
     awful.key({}, "XF86AudioMute",        function() volumecfg:toggle() end)
+
+    -- Brightness Controls
+    awful.key({}, "XF86MonBrightnessUp", function() awful.util.spawn("light -A 5") end),
+    awful.key({}, "XF86MonBrightnessDown", function() awful.util.spawn("light -U 5") end),
 )
 
 clientkeys = gears.table.join(
