@@ -54,13 +54,13 @@ end
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
-beautiful.useless_gap = 2
+beautiful.useless_gap = 1
 beautiful.border_normal = "#2E3436" -- gray
 beautiful.border_focus = "#FFA500" -- orange
 beautiful.border_focus = "#4E9A06" -- green
 beautiful.border_width= 5
 -- beautiful.bg_systray = "#FFFFFF"
-beautiful.font = "InconsolataGo Nerd Font Medium 10"
+beautiful.font = "InconsolataGo Nerd Font 10"
 
 -- This is used later as the default terminal and editor to run.
 terminal = "terminator"
@@ -134,20 +134,20 @@ volumecfg = volume_control({
 
 battery_widget = require("battery-widget")
 batwid = battery_widget {
-    ac = "AC",
+    -- ac = "AC",
     -- adapter = "BAT0",
     -- ac_prefix = "  ",
     ac_prefix = {
-        { 10, " ﮣ " },
-        { 20, " ﮣ " },
-        { 30, " ﮣ " },
-        { 40, " ﮣ " },
-        { 50, " ﮣ " },
-        { 60, " ﮣ " },
-        { 70, " ﮣ " },
-        { 80, " ﮣ " },
-        { 90, " ﮣ " },
-        {100, " ﮣ " }
+        { 10, "  " },
+        { 20, "  " },
+        { 30, "  " },
+        { 40, "  " },
+        { 50, "  " },
+        { 60, "  " },
+        { 70, "  " },
+        { 80, "  " },
+        { 90, "  " },
+        {100, "  " }
     },
     -- battery_prefix = "  ",
     battery_prefix = {
