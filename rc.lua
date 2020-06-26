@@ -122,6 +122,70 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 
 -- {{{ Wibar
 
+-- @tt current task
+local tt_widget = awful.widget.watch('/home/arnes/bin/@tt-db -c', 5,
+    function(w, stdout, stderr)
+        w:set_markup(string.format(' 華 %s ', string.gsub(stdout, "%s+", "" )))
+    end
+)
+
+tt_time_to_work_widget = wibox.widget.textbox( "..." )
+
+
+-- @tt % complete for today
+local tt_percent_widget = wibox.widget {
+    max_value     = 1,
+    -- value         = 0.66,
+    forced_height = 1,
+    forced_width  = 20,
+    -- shape         = gears.shape.rounded_bar,
+    border_width  = 2,
+    border_color  = beautiful.border_color,
+    color  = "#000",
+    background_color = "#555",
+    widget        = wibox.widget.progressbar,
+}
+tt_percent_tooltip = awful.tooltip({objects={tt_percent_widget}})
+local cmd = [[bash -c "
+    while true; do
+        /home/arnes/bin/@tt-stats $(/home/arnes/bin/@tt-db today --list) | awk '{print $9}' | sed '/^$/d'
+        sleep 120
+    done 
+"]]
+awful.spawn.with_line_callback(cmd, {
+    stdout = function(line)
+        local curval = tonumber(line)
+        tt_percent_widget:set_value(curval)
+        tt_percent_tooltip:set_text( "The current workday progressed: " .. math.floor(curval * 100) .. "%" )
+        tt_time_to_work_widget:set_text( "羽 " .. os.date('!%H:%M', 60*60*8 - 60*60*8*curval ) .. " " )
+        -- if curval < 0.33  then
+        --     tt_percent_widget.color = "#aa361a"
+        -- elseif curval < 0.66 then
+        --     tt_percent_widget.color = "#FF5800"
+        -- elseif  curval < 0.99 then
+        --     tt_percent_widget.color = "#ffb200"
+        -- else
+        --     tt_percent_widget.color = "#78c848"
+        --     tt_percent_widget.color = "#252525"
+        -- end
+    end
+    -- stderr = function(line) naughty.notify({ text = "ERR:"..line}) end,
+})
+
+-- @tt stack
+
+local tt_stacked_widget = wibox.widget {
+    tt_percent_widget,
+    wibox.widget {
+        tt_widget,
+        tt_time_to_work_widget,
+        layout  = wibox.layout.align.horizontal,
+    },
+    layout  = wibox.layout.stack,
+    padding = 50
+}
+
+
 -- Volume Control Widget
 volumecfg = volume_control({
     -- font = "InconsolataLGC Nerd Font Medium 9", -- if defined after beautiful is seems OK
@@ -179,7 +243,11 @@ batwid = battery_widget {
 }
 
 -- Create a textclock widget
-mytextclock = wibox.widget.textclock("  %a %b %d %H:%m ")
+mytextclock = wibox.widget.textclock("  %a %b %d %H:%M ")
+local month_calendar = awful.widget.calendar_popup.month()
+-- month_calendar:attach( mytextclock, "br", awful.screen.focused() )
+month_calendar:attach( mytextclock, "br", { screen = awful.screen.focused() } )
+
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -288,6 +356,7 @@ awful.screen.connect_for_each_screen(function(s)
             layout = wibox.layout.fixed.horizontal,
             spacing = 15,
             -- mykeyboardlayout,
+            tt_stacked_widget,
             wibox.widget.systray(),
             volumecfg.widget,
             batwid,
@@ -417,7 +486,7 @@ globalkeys = gears.table.join(
 
     -- Lock
     awful.key({ modkey }, "l",
-              function () awful.util.spawn_with_shell("slock") end,
+              function () awful.util.spawn("slock") end,
               {description = "Lock Screen", group = "launcher"}
     ),
 
@@ -610,6 +679,8 @@ awful.rules.rules = {
     },
 
     -- Set Firefox to always map on the tag named "2" on screen 1.
+    -- { rule = { class = "Thunderbird" },
+    --   properties = { screen = 1, tag = "1" } },
     -- { rule = { class = "Firefox" },
     --   properties = { screen = 1, tag = "2" } },
 }
@@ -680,4 +751,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- }}}
 
 
+-- Add auto lock screen on screensaver start
+-- Change the screensaver timout via `xset s <seconds>`
+awful.util.spawn_with_shell("xss-lock slock")
 awful.util.spawn_with_shell("~/.fehbg")
