@@ -142,7 +142,7 @@ local tt_percent_widget = wibox.widget {
     border_width  = 2,
     border_color  = beautiful.border_color,
     color  = "#000",
-    background_color = "#555",
+    background_color = "#444",
     widget        = wibox.widget.progressbar,
 }
 tt_percent_tooltip = awful.tooltip({objects={tt_percent_widget}})
