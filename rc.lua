@@ -148,8 +148,8 @@ local tt_percent_widget = wibox.widget {
 tt_percent_tooltip = awful.tooltip({objects={tt_percent_widget}})
 local cmd = [[bash -c "
     while true; do
-        /home/arnes/bin/@tt-stats $(/home/arnes/bin/@tt-db today --list) | awk '{print $9}' | sed '/^$/d'
-        sleep 120
+        /home/arnes/bin/@tt-stats --exact-percentage $(/home/arnes/bin/@tt-db today --list)
+        sleep 60
     done 
 "]]
 awful.spawn.with_line_callback(cmd, {
