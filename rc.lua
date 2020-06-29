@@ -755,3 +755,6 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- Change the screensaver timout via `xset s <seconds>`
 awful.util.spawn_with_shell("xss-lock slock")
 awful.util.spawn_with_shell("~/.fehbg")
+
+--  Remap CapsLock to another escape
+awful.util.spawn("setxkbmap -option caps:escape")
