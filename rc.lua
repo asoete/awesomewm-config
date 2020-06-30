@@ -155,6 +155,9 @@ local cmd = [[bash -c "
 awful.spawn.with_line_callback(cmd, {
     stdout = function(line)
         local curval = tonumber(line)
+
+        if curval == nil then return  end 
+
         tt_percent_widget:set_value(curval)
         tt_percent_tooltip:set_text( "The current workday progressed: " .. math.floor(curval * 100) .. "%" )
         tt_time_to_work_widget:set_text( "羽 " .. os.date('!%H:%M', 60*60*8 - 60*60*8*curval ) .. " " )
