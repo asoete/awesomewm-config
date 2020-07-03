@@ -22,6 +22,8 @@ require("awful.hotkeys_popup.keys")
 -- load the widget code
 local volume_control = require("volume-control")
 
+-- Revelation: Show all clients
+local revelation = require("revelation")
 
 -- add key bindings
 
@@ -62,6 +64,9 @@ beautiful.border_width= 5
 -- beautiful.bg_systray = "#FFFFFF"
 beautiful.font = "InconsolataGo Nerd Font 10"
 
+-- Init revelation
+revelation.init()
+
 -- This is used later as the default terminal and editor to run.
 terminal = "terminator"
 editor = os.getenv("EDITOR") or "vim"
@@ -77,11 +82,11 @@ modkey = "Mod4"
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
     awful.layout.suit.tile.left,
-    awful.layout.suit.tile,
     awful.layout.suit.floating,
+    awful.layout.suit.fair,
+    -- awful.layout.suit.tile,
     -- awful.layout.suit.tile.bottom,
     -- awful.layout.suit.tile.top,
-    awful.layout.suit.fair,
     -- awful.layout.suit.fair.horizontal,
     -- awful.layout.suit.spiral,
     -- awful.layout.suit.spiral.dwindle,
@@ -456,9 +461,9 @@ globalkeys = gears.table.join(
               {description = "increase the number of columns", group = "layout"}),
     awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1, nil, true)    end,
               {description = "decrease the number of columns", group = "layout"}),
-    awful.key({ modkey,           }, "space", function () awful.layout.inc( 1)                end,
+    awful.key({ modkey, "Control" }, "space", function () awful.layout.inc( 1)                end,
               {description = "select next", group = "layout"}),
-    awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(-1)                end,
+    awful.key({ modkey, "Control", "Shift"   }, "space", function () awful.layout.inc(-1)                end,
               {description = "select previous", group = "layout"}),
 
     awful.key({ modkey, "Control" }, "n",
@@ -487,6 +492,10 @@ globalkeys = gears.table.join(
     awful.key({ modkey }, "e",
               function () awful.util.spawn_with_shell("~/projects/launcher/raise-window.sh thunderbird") end,
               {description = "Raise Email Application", group = "launcher"}
+    ),
+    awful.key({ modkey }, " ",
+              function () awful.util.spawn_with_shell("~/projects/launcher/leader.sh") end,
+              {description = "Rofi Leader", group = "launcher"}
     ),
     awful.key({ modkey }, "w",
               function () awful.util.spawn_with_shell("~/projects/launcher/raise-window.sh") end,
@@ -526,7 +535,10 @@ globalkeys = gears.table.join(
 
     -- Brightness Controls
     awful.key({}, "XF86MonBrightnessUp", function() awful.util.spawn("light -A 5") end),
-    awful.key({}, "XF86MonBrightnessDown", function() awful.util.spawn("light -U 5") end)
+    awful.key({}, "XF86MonBrightnessDown", function() awful.util.spawn("light -U 5") end),
+
+    -- revelation
+    awful.key({ modkey }, "r",      revelation)
 )
 
 clientkeys = gears.table.join(
@@ -694,10 +706,10 @@ awful.rules.rules = {
     },
 
     -- Set Firefox to always map on the tag named "2" on screen 1.
-    -- { rule = { class = "Thunderbird" },
-    --   properties = { screen = 1, tag = "1" } },
-    -- { rule = { class = "Firefox" },
-    --   properties = { screen = 1, tag = "2" } },
+    { rule = { class = "Thunderbird" },
+      properties = { screen = 1, tag = "1", maximized = false } },
+    { rule = { class = "Firefox" },
+      properties = { screen = 1, tag = "2", maximized = false, } },
 }
 -- }}}
 
